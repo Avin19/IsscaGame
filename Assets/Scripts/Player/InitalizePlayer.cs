@@ -1,0 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class InitalizePlayer : MonoBehaviour
+{
+    private Animator _animator;
+    private void Awake() {
+        _animator = GetComponent<Animator>();
+    }
+    void Start()
+    {
+        Player._animator =_animator;
+    }
+
+   
+}
