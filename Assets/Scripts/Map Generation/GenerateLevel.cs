@@ -63,7 +63,10 @@ public class GenerateLevel : MonoBehaviour
             room.location = new Vector2(1, 0) + room.location;
             room.roomImage = Level._defaultRoomIcon;
             if (!CheckIfRoomExist(room.location))
-            { GenerateRoom(room); }
+            {
+                if (CheckIfRoomAroundGeneratedRoom(room.location, "Right"))
+                    GenerateRoom(room);
+            }
         }
         //Up
         if (Random.value > Level._roomGenerationChance)
@@ -101,8 +104,42 @@ public class GenerateLevel : MonoBehaviour
     {
         switch (direction)
         {
-            case "Up":
-                { break; }
+            case "Right":
+                { 
+                    //Check down, left and up
+                    if(Level.roooms.Exists(x=> x.location == new Vector2(v.x-1,v.y)) ||
+                        Level.roooms.Exists(x => x.location == new Vector2(v.x,v.y-1)) ||
+                        Level.roooms.Exists(x => x.location == new Vector2(v.x-1,v.y+1)))
+                        return true;
+                    break; 
+                }
+                case "Left":
+                {
+                    // checks down , right and up
+                    if(Level.roooms.Exists(x=>x.location == new Vector2(v.x+1,v.y))||
+                        Level.roooms.Exists(x => x.location == new Vector2(v.x ,v.y-1))||
+                        Level.roooms.Exists(x => x.location ==new Vector2(v.x , v.y+1)))
+                        return true;
+                    break;
+                }
+                case "Up":
+                {
+                    // Check down , left, right
+                    if(Level.roooms.Exists( x => x.location ==new Vector2(v.x,v.y-1))||
+                        Level.roooms.Exists(x => x.location == new Vector2(v.x-1, v.y))||
+                        Level.roooms.Exists(x => x.location == new Vector2(v.x+1 , v.y)))
+                     return true;
+                    break;
+                }
+                case "Down":
+                {
+                    // check up, left ,right
+                    if(Level.roooms.Exists( x => x.location ==new Vector2(v.x,v.y+1))||
+                        Level.roooms.Exists(x => x.location ==new Vector2(v.x-1,v.y))||
+                        Level.roooms.Exists(x => x.location ==new Vector2(v.x+1 , v.y)))
+                        return true;
+                    break;
+                }
         }
         return false;
     }
