@@ -39,75 +39,17 @@ public class GenerateLevel : MonoBehaviour
 
         DrawRoomOnMap(startRoom);
         //left
-        if (Random.value > Level._roomGenerationChance)
-        {
-            Room room = new Room();
-            room.location = new Vector2(-1, 0) + startRoom.location;
-            room.roomSprite = Level._defaultRoomIcon;
-            room.roomNumber = RandomRoomNumber();
-            if (!CheckIfRoomExist(room.location))
-            {
-
-                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Right"))
-                {
-
-                    GenerateRoom(room);
-                }
-            }
-
-        }
+       
+        CreateRoom(startRoom, "Right",new Vector2(-1, 0));
         //Right
-        if (Random.value > Level._roomGenerationChance)
-        {
-
-            Room room = new Room();
-            room.location = new Vector2(1, 0) + startRoom.location;
-            room.roomSprite = Level._defaultRoomIcon;
-            room.roomNumber = RandomRoomNumber();
-            if (!CheckIfRoomExist(room.location))
-            {
-                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Left"))
-                {
-
-                    GenerateRoom(room);
-                }
-            }
-        }
+        
+         CreateRoom(startRoom, "Left",new Vector2(1, 0));
         //Up
-        if (Random.value > Level._roomGenerationChance)
-        {
-            Room room = new Room();
-            room.location = new Vector2(0, 1) + startRoom.location;
-            room.roomSprite = Level._defaultRoomIcon;
-            room.roomNumber = RandomRoomNumber();
-            if (!CheckIfRoomExist(room.location))
-            {
-
-                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Down"))
-                {
-
-                    GenerateRoom(room);
-                }
-            }
-
-        }
+       
+         CreateRoom(startRoom, "Down",new Vector2(0, 1));
         //Down
-        if (Random.value > Level._roomGenerationChance)
-        {
-            Room room = new Room();
-            room.location = new Vector2(0, -1) + startRoom.location;
-            room.roomSprite = Level._defaultRoomIcon;
-            room.roomNumber = RandomRoomNumber();
-            if (!CheckIfRoomExist(room.location))
-            {
-
-                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Up"))
-                {
-                    GenerateRoom(room);
-                }
-            }
-
-        }
+       
+         CreateRoom(startRoom, "Up",new Vector2(0, -1));
         GenerateBossRoom();
         bool teasure =GenerateSpecialRoom(Level._treasureRoomIcon, 3);
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
@@ -438,4 +380,25 @@ public class GenerateLevel : MonoBehaviour
         return Random.Range(6,GameObject.Find("Rooms").transform.childCount);
     }
 
+    private void CreateRoom(Room startRoom , string direction , Vector2 where)
+    {
+         if (Random.value > Level._roomGenerationChance)
+        {
+            Room room = new Room();
+            room.location = where + startRoom.location;
+            room.roomSprite = Level._defaultRoomIcon;
+            room.roomNumber = RandomRoomNumber();
+            if (!CheckIfRoomExist(room.location))
+            {
+
+                if (!CheckIfRoomAroundGeneratedRoom(room.location, direction))
+                {
+
+                    GenerateRoom(room);
+                }
+            }
+
+        }
+
+    }
 }
