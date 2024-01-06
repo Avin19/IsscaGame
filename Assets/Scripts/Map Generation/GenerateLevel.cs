@@ -35,8 +35,6 @@ public class GenerateLevel : MonoBehaviour
         startRoom.reveledRoom =true;
         startRoom.roomSprite = Level._currentRoomIcon;
         startRoom.roomNumber = 0;
-
-
         Player._currentRoom = startRoom;
 
         DrawRoomOnMap(startRoom);
@@ -115,7 +113,7 @@ public class GenerateLevel : MonoBehaviour
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
         bool secret = GenerateSpecialRoom(Level._secretRoomIcon ,4);
 
-        if(!teasure || !shop)
+        if(!teasure || !shop || !secret)
         {
             RegenerateMap();
         }
@@ -306,6 +304,7 @@ public class GenerateLevel : MonoBehaviour
         if(r.roomNumber ==1) roomName = "Boss Room";
         if(r.roomNumber== 2 ) roomName ="Shop Room";
         if(r.roomNumber == 3) roomName = "Teasure Room";
+        if(r.roomNumber == 4) roomName = "Secert Room";
         GameObject mapTile = new GameObject(roomName);
         Image roomSprite = mapTile.AddComponent<Image>();
         roomSprite.sprite = r.roomSprite;
@@ -430,7 +429,7 @@ public class GenerateLevel : MonoBehaviour
 
         }
         DrawRoomOnMap(bossRoom);
-         Debug.Log(bossRoom.location);
+        Debug.Log(bossRoom.location);
     }
 
 
