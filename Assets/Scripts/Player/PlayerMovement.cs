@@ -41,13 +41,13 @@ public class PlayerMovement : MonoBehaviour
 
         if ((h != 0 || v != 0) && Player._status == "Idle")
         {
-            Player._animator.SetFloat("Speed",1);
+            Player._animator.SetFloat("Speed", 1);
             Player._animator.Play("Walk");
 
         }
         else
         {
-            Player._animator.SetFloat("Speed",0);
+            Player._animator.SetFloat("Speed", 0);
         }
 
         Vector3 move = new Vector3(h, 0, v);

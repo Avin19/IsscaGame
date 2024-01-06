@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,8 +14,7 @@ public class GenerateLevel : MonoBehaviour
 
     [SerializeField] private Sprite _unexploredRoom;
 
-   
-    void Start()
+    private void Awake()
     {
         Level._defaultRoomIcon = _emptyRoom;
         Level._bossRoomIcon = _bossRoom;
@@ -23,51 +22,111 @@ public class GenerateLevel : MonoBehaviour
         Level._currentRoomIcon = _currentRoom;
         Level._shopRoomIcon = _shopRoom;
         Level._unexploredIcon = _unexploredRoom;
+    }
+    void Start()
+    {
+
         //Drawing the start the first room
         Room startRoom = new Room();
         startRoom.location = new Vector2(0, 0);
-        startRoom.roomImage = Level._currentRoomIcon;
+        startRoom.roomSprite = Level._currentRoomIcon;
+        startRoom.roomNumber = 0;
+
+
+        Player._currentRoom = startRoom;
 
         DrawRoomOnMap(startRoom);
         //left
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room room = new Room();
             room.location = new Vector2(-1, 0) + startRoom.location;
-            room.roomImage = Level._defaultRoomIcon;
-            GenerateRoom(room);
+            room.roomSprite = Level._defaultRoomIcon;
+            room.roomNumber = RandomRoomNumber();
+            if (!CheckIfRoomExist(room.location))
+            {
+
+                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Right"))
+                {
+
+                    GenerateRoom(room);
+                }
+            }
 
         }
         //Right
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
 
             Room room = new Room();
             room.location = new Vector2(1, 0) + startRoom.location;
-            room.roomImage = Level._defaultRoomIcon;
+            room.roomSprite = Level._defaultRoomIcon;
+            room.roomNumber = RandomRoomNumber();
+            if (!CheckIfRoomExist(room.location))
+            {
+                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Left"))
+                {
 
-            GenerateRoom(room);
+                    GenerateRoom(room);
+                }
+            }
         }
         //Up
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room room = new Room();
             room.location = new Vector2(0, 1) + startRoom.location;
-            room.roomImage = Level._defaultRoomIcon;
+            room.roomSprite = Level._defaultRoomIcon;
+            room.roomNumber = RandomRoomNumber();
+            if (!CheckIfRoomExist(room.location))
+            {
 
-            GenerateRoom(room);
+                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Down"))
+                {
+
+                    GenerateRoom(room);
+                }
+            }
 
         }
         //Down
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room room = new Room();
             room.location = new Vector2(0, -1) + startRoom.location;
-            room.roomImage = Level._defaultRoomIcon;
+            room.roomSprite = Level._defaultRoomIcon;
+            room.roomNumber = RandomRoomNumber();
+            if (!CheckIfRoomExist(room.location))
+            {
 
-            GenerateRoom(room);
+                if (!CheckIfRoomAroundGeneratedRoom(room.location, "Up"))
+                {
+                    GenerateRoom(room);
+                }
+            }
 
         }
+        GenerateBossRoom();
+        bool teasure =GenerateSpecialRoom(Level._treasureRoomIcon, 3);
+        bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
+
+        if(!teasure || !shop)
+        {
+            RegenerateMap();
+        }
+
+    }
+
+    private void RegenerateMap()
+    {
+          for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                Transform child = transform.GetChild(i);
+                Destroy(child.gameObject);
+            }
+            Level.roooms.Clear();
+            Start();
+
 
     }
 
@@ -75,79 +134,172 @@ public class GenerateLevel : MonoBehaviour
     {
         return (Level.roooms.Exists(x => x.location == v));
     }
-    int failsafe = 0;
+
+    private bool GenerateSpecialRoom(Sprite mapIcon, int roomNumber)
+    {
+
+        List<Room> shuffedList = new List<Room>(Level.roooms);
+        Room specialRoom = new Room();
+        specialRoom.roomSprite = mapIcon;
+        specialRoom.roomNumber = roomNumber;
+        foreach (Room r in shuffedList)
+        {
+            Vector2 specialRoomLocation = r.location;
+            bool foundAvailableLoaction = false;
+            if (r.roomNumber < 6) { continue; }
+
+
+            //left
+            if (!CheckIfRoomExist(specialRoomLocation + new Vector2(-1, 0)))
+            {
+                if (!CheckIfRoomAroundGeneratedRoom(specialRoomLocation + new Vector2(-1, 0), "Right"))
+                {
+                    specialRoom.location = specialRoomLocation + new Vector2(-1, 0);
+                    foundAvailableLoaction = true;
+                }
+
+            }
+            //right
+            else if (!CheckIfRoomExist(specialRoomLocation + new Vector2(1, 0)))
+            {
+                if (!CheckIfRoomAroundGeneratedRoom(specialRoomLocation + new Vector2(1, 0), "Left"))
+                {
+                    specialRoom.location = specialRoomLocation + new Vector2(1, 0);
+                    foundAvailableLoaction = true;
+                }
+
+            }
+            //down 
+            else if (!CheckIfRoomExist(specialRoomLocation + new Vector2(0, 1)))
+            {
+                if (!CheckIfRoomAroundGeneratedRoom(specialRoomLocation + new Vector2(0, 1), "Down"))
+                {
+                    specialRoom.location = specialRoomLocation + new Vector2(0, 1);
+                    foundAvailableLoaction = true;
+                }
+
+            }
+            //up
+            else if (!CheckIfRoomExist(specialRoomLocation + new Vector2(0, -1)))
+            {
+                if (!CheckIfRoomAroundGeneratedRoom(specialRoomLocation + new Vector2(0, -1), "Up"))
+                {
+                    specialRoom.location = specialRoomLocation + new Vector2(0, -1);
+                    foundAvailableLoaction = true;
+                }
+
+            }
+            if (foundAvailableLoaction)
+            {
+                DrawRoomOnMap(specialRoom);
+                return true;
+            }
+        }
+        return false;
+
+    }
+    private void ShuffleList<T>(List<T> list)
+    {
+        int n = list.Count;
+        System.Random rng = new System.Random();
+
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
     private void GenerateRoom(Room room)
     {
 
-        failsafe++;
 
-        if (failsafe > 50)
-        {
-
-            return;
-        }
         // Debug.Log(failsafe);
         DrawRoomOnMap(room);
         //left
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room newRoom = new Room();
             newRoom.location = new Vector2(-1, 0) + room.location;
-            newRoom.roomImage = Level._defaultRoomIcon;
+            newRoom.roomSprite = Level._defaultRoomIcon;
+            newRoom.roomNumber = RandomRoomNumber();
             if (!CheckIfRoomExist(newRoom.location))
             {
-                // GenerateRoom(newRoom);
+
                 if (!CheckIfRoomAroundGeneratedRoom(newRoom.location, "Right"))
-                { GenerateRoom(newRoom); }
+                {
+                    if (Mathf.Abs(room.location.x) < Level._roomlimit && Mathf.Abs(room.location.y) < Level._roomlimit)
+                        GenerateRoom(newRoom);
+                }
             }
         }
         //Right
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
 
             Room newRoom = new Room();
             newRoom.location = new Vector2(1, 0) + room.location;
-            newRoom.roomImage = Level._defaultRoomIcon;
+            newRoom.roomSprite = Level._defaultRoomIcon;
+            newRoom.roomNumber = RandomRoomNumber();
             if (!CheckIfRoomExist(newRoom.location))
             {
-                // GenerateRoom(newRoom);
+
                 if (!CheckIfRoomAroundGeneratedRoom(newRoom.location, "Left"))
-                { GenerateRoom(newRoom); }
+                {
+                    if (Mathf.Abs(room.location.x) < Level._roomlimit && Mathf.Abs(room.location.y) < Level._roomlimit)
+
+                        GenerateRoom(newRoom);
+                }
             }
         }
         //Up
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room newRoom = new Room();
             newRoom.location = new Vector2(0, 1) + room.location;
-            newRoom.roomImage = Level._defaultRoomIcon;
+            newRoom.roomSprite = Level._defaultRoomIcon;
+            newRoom.roomNumber = RandomRoomNumber();
             if (!CheckIfRoomExist(newRoom.location))
             {
-                // GenerateRoom(newRoom);
+
                 if (!CheckIfRoomAroundGeneratedRoom(newRoom.location, "Down"))
-                { GenerateRoom(newRoom); }
+                {
+                    if (Mathf.Abs(room.location.x) < Level._roomlimit && Mathf.Abs(room.location.y) < Level._roomlimit)
+                        GenerateRoom(newRoom);
+                }
             }
         }
         //Down
-        if (Random.value > 0.5f)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room newRoom = new Room();
             newRoom.location = new Vector2(0, -1) + room.location;
-            newRoom.roomImage = Level._defaultRoomIcon;
+            newRoom.roomSprite = Level._defaultRoomIcon;
+            newRoom.roomNumber = RandomRoomNumber();
             if (!CheckIfRoomExist(newRoom.location))
             {
-                // GenerateRoom(newRoom);
+
                 if (!CheckIfRoomAroundGeneratedRoom(newRoom.location, "Up"))
-                { GenerateRoom(newRoom); }
+                {
+                    if (Mathf.Abs(room.location.x) < Level._roomlimit && Mathf.Abs(room.location.y) < Level._roomlimit)
+                        GenerateRoom(newRoom);
+                }
             }
         }
     }
 
     private void DrawRoomOnMap(Room r)
     {
-        GameObject mapTile = new GameObject("Map Tile");
+        string roomName = "Map Tile";
+        if(r.roomNumber ==1) roomName = "Boss Room";
+        if(r.roomNumber== 2 ) roomName ="Shop Room";
+        if(r.roomNumber == 3) roomName = "Teasure Room";
+        GameObject mapTile = new GameObject(roomName);
         Image roomSprite = mapTile.AddComponent<Image>();
-        roomSprite.sprite = r.roomImage;
+        roomSprite.sprite = r.roomSprite;
+        r.roomImage = roomSprite;
         RectTransform roomRectTransfomr = mapTile.GetComponent<RectTransform>();
         roomRectTransfomr.sizeDelta = new Vector2(Level._height, Level._width) * Level._scaleIcon;
         roomRectTransfomr.position = r.location * (Level._scaleIcon * Level._height * Level._scaleMap + (Level._padding * Level._height * Level._scaleMap));
@@ -161,7 +313,7 @@ public class GenerateLevel : MonoBehaviour
         {
             case "Right":
                 {
-                    Debug.Log("right");
+
                     //Check down, left and up
                     if (Level.roooms.Exists(x => x.location == new Vector2(v.x - 1, v.y)) ||
                         Level.roooms.Exists(x => x.location == new Vector2(v.x, v.y - 1)) ||
@@ -171,7 +323,7 @@ public class GenerateLevel : MonoBehaviour
                 }
             case "Left":
                 {
-                    Debug.Log("Left");
+
                     // checks down , right and up
                     if (Level.roooms.Exists(x => x.location == new Vector2(v.x + 1, v.y)) ||
                         Level.roooms.Exists(x => x.location == new Vector2(v.x, v.y - 1)) ||
@@ -181,7 +333,7 @@ public class GenerateLevel : MonoBehaviour
                 }
             case "Up":
                 {
-                    Debug.Log("Up");
+
                     // Check down , left, right
                     if (Level.roooms.Exists(x => x.location == new Vector2(v.x, v.y - 1)) ||
                         Level.roooms.Exists(x => x.location == new Vector2(v.x - 1, v.y)) ||
@@ -191,7 +343,7 @@ public class GenerateLevel : MonoBehaviour
                 }
             case "Down":
                 {
-                    Debug.Log("Down");
+
                     // check up, left ,right
                     if (Level.roooms.Exists(x => x.location == new Vector2(v.x, v.y + 1)) ||
                         Level.roooms.Exists(x => x.location == new Vector2(v.x - 1, v.y)) ||
@@ -202,4 +354,78 @@ public class GenerateLevel : MonoBehaviour
         }
         return false;
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+           RegenerateMap();
+        }
+    }
+
+    private void GenerateBossRoom()
+    {
+        float maxNumberx = 0;
+        Vector2 farthestRoom = Vector2.zero;
+
+        foreach (Room r in Level.roooms)
+        {
+            if (Mathf.Abs(r.location.x) + Mathf.Abs(r.location.y) >= maxNumberx)
+            {
+                maxNumberx = Mathf.Abs(r.location.x) + Mathf.Abs(r.location.y);
+                farthestRoom = r.location;
+            }
+
+
+        }
+        Debug.Log(farthestRoom);
+        Room bossRoom = new Room();
+        bossRoom.roomSprite = Level._bossRoomIcon;
+        bossRoom.roomNumber = 1;
+
+        //left
+        if (!CheckIfRoomExist(farthestRoom + new Vector2(-1, 0)))
+        {
+            if (!CheckIfRoomAroundGeneratedRoom(farthestRoom + new Vector2(-1, 0), "Right"))
+            {
+                bossRoom.location = farthestRoom + new Vector2(-1, 0);
+            }
+
+        }
+        //right
+        else if (!CheckIfRoomExist(farthestRoom + new Vector2(1, 0)))
+        {
+            if (!CheckIfRoomAroundGeneratedRoom(farthestRoom + new Vector2(1, 0), "Left"))
+            {
+                bossRoom.location = farthestRoom + new Vector2(1, 0);
+            }
+
+        }
+        //down 
+        else if (!CheckIfRoomExist(farthestRoom + new Vector2(0, 1)))
+        {
+            if (!CheckIfRoomAroundGeneratedRoom(farthestRoom + new Vector2(0, 1), "Down"))
+            {
+                bossRoom.location = farthestRoom + new Vector2(0, 1);
+            }
+
+        }
+        //up
+        else if (!CheckIfRoomExist(farthestRoom + new Vector2(0, -1)))
+        {
+            if (!CheckIfRoomAroundGeneratedRoom(farthestRoom + new Vector2(0, -1), "Up"))
+            {
+                bossRoom.location = farthestRoom + new Vector2(0, -1);
+            }
+
+        }
+        DrawRoomOnMap(bossRoom);
+    }
+
+
+    private int RandomRoomNumber()
+    {
+        return Random.Range(6,GameObject.Find("Rooms").transform.childCount);
+    }
+
 }
