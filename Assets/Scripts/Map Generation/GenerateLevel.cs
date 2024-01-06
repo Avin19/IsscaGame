@@ -13,6 +13,7 @@ public class GenerateLevel : MonoBehaviour
     [SerializeField] private Sprite _treasureRoom;
 
     [SerializeField] private Sprite _unexploredRoom;
+    [SerializeField] private Sprite _secretRoom;
 
     private void Awake()
     {
@@ -22,6 +23,7 @@ public class GenerateLevel : MonoBehaviour
         Level._currentRoomIcon = _currentRoom;
         Level._shopRoomIcon = _shopRoom;
         Level._unexploredIcon = _unexploredRoom;
+        Level._secretRoomIcon =_secretRoom;
     }
     void Start()
     {
@@ -29,6 +31,8 @@ public class GenerateLevel : MonoBehaviour
         //Drawing the start the first room
         Room startRoom = new Room();
         startRoom.location = new Vector2(0, 0);
+        startRoom.exploredRoom =true;
+        startRoom.reveledRoom =true;
         startRoom.roomSprite = Level._currentRoomIcon;
         startRoom.roomNumber = 0;
 
@@ -109,10 +113,16 @@ public class GenerateLevel : MonoBehaviour
         GenerateBossRoom();
         bool teasure =GenerateSpecialRoom(Level._treasureRoomIcon, 3);
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
+        bool secret = GenerateSpecialRoom(Level._secretRoomIcon ,4);
 
         if(!teasure || !shop)
         {
             RegenerateMap();
+        }
+        else
+        {
+            ChangeRoom.RevealRoom(startRoom);
+            ChangeRoom.ReDrawRoomRealved();
         }
 
     }
@@ -378,7 +388,7 @@ public class GenerateLevel : MonoBehaviour
 
 
         }
-        Debug.Log(farthestRoom);
+       
         Room bossRoom = new Room();
         bossRoom.roomSprite = Level._bossRoomIcon;
         bossRoom.roomNumber = 1;
@@ -420,6 +430,7 @@ public class GenerateLevel : MonoBehaviour
 
         }
         DrawRoomOnMap(bossRoom);
+         Debug.Log(bossRoom.location);
     }
 
 

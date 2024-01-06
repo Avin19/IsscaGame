@@ -42,90 +42,19 @@ public class ChangeRoom : MonoBehaviour
         {
 
 
-            //where are we ?
-            Vector2 location = Player._currentRoom.location;
-            //where are we going  ?
-
-            location = location + new Vector2(-1, 0);
-
-            if (Level.roooms.Exists(x => x.location == location))
-            {
-
-                Room r = Level.roooms.First(x => x.location == location);
-                roomParent.Find(Player._currentRoom.roomNumber.ToString()).gameObject.SetActive(false);
-                Transform nextRoom = roomParent.Find(r.roomNumber.ToString());
-                nextRoom.gameObject.SetActive(true);
-                Player._characterController.enabled = false;
-                Player.transform.position = nextRoom.Find("Doors").Find("RightDoor").position + new Vector3(-doorSpawnOffset, 0f, 0f);
-                Player._characterController.enabled = true;
-                ChangeRoomImage(Player._currentRoom, r);
-                Player._currentRoom = r;
-                EnableDoor(r);
-
-            }
+            CheckRoom(new Vector2(-1,0),"RightDoor",new Vector3(-doorSpawnOffset,0f,0f));
         }
         if (hit.gameObject.name == "RightDoor")
         {
-           Vector2 location = Player._currentRoom.location;
-            //where are we going  ?
-
-            location = location + new Vector2(1, 0);
-            if (Level.roooms.Exists(x => x.location == location))
-            {
-                Room r = Level.roooms.First(x => x.location == location);
-                roomParent.Find(Player._currentRoom.roomNumber.ToString()).gameObject.SetActive(false);
-                Transform nextRoom = roomParent.Find(r.roomNumber.ToString());
-                nextRoom.gameObject.SetActive(true);
-                Player._characterController.enabled = false;
-                Player.transform.position = nextRoom.Find("Doors").Find("LeftDoor").position + new Vector3(doorSpawnOffset, 0f, 0f);
-                Player._characterController.enabled = true;
-                ChangeRoomImage(Player._currentRoom, r);
-                Player._currentRoom = r;
-                EnableDoor(r);
-
-            }
+            CheckRoom(new Vector2(1,0),"LeftDoor",new Vector3(doorSpawnOffset,0f,0f));
         }
         if (hit.gameObject.name == "TopDoor")
         {
-           Vector2 location = Player._currentRoom.location;
-            //where are we going  ?
-
-            location = location + new Vector2(0, 1);
-            if (Level.roooms.Exists(x => x.location == location))
-            {
-                Room r = Level.roooms.First(x => x.location == location);
-                roomParent.Find(Player._currentRoom.roomNumber.ToString()).gameObject.SetActive(false);
-                Transform nextRoom = roomParent.Find(r.roomNumber.ToString());
-                nextRoom.gameObject.SetActive(true);
-                Player._characterController.enabled = false;
-                Player.transform.position = nextRoom.Find("Doors").Find("BottomDoor").position + new Vector3(0f, 0f, doorSpawnOffset);
-                Player._characterController.enabled = true;
-                ChangeRoomImage(Player._currentRoom, r);
-                Player._currentRoom = r;
-                EnableDoor(r);
-
-            }
+           CheckRoom(new Vector2(0,1),"BottomDoor",new Vector3(0f,0f,doorSpawnOffset));
         }
         if (hit.gameObject.name == "BottomDoor")
         {
-            Vector2 location = Player._currentRoom.location;
-            //where are we going  ?
-
-            location = location + new Vector2(0, -1);
-            if (Level.roooms.Exists(x => x.location == location))
-            {
-                Room r = Level.roooms.First(x => x.location == location);
-                roomParent.Find(Player._currentRoom.roomNumber.ToString()).gameObject.SetActive(false);
-                Transform nextRoom = roomParent.Find(r.roomNumber.ToString());
-                nextRoom.gameObject.SetActive(true);
-                Player._characterController.enabled = false;
-                Player.transform.position = nextRoom.Find("Doors").Find("TopDoor").position + new Vector3(0f, 0f, -doorSpawnOffset);
-                Player._characterController.enabled = true;
-                ChangeRoomImage(Player._currentRoom, r);
-                Player._currentRoom = r;
-                EnableDoor(r);
-
-            }
+            CheckRoom(new Vector2(0,-1),"TopDoor", new Vector3(0f,0f,-doorSpawnOffset));
         }
             roomchangeTime =false;
         }
@@ -173,5 +102,85 @@ public class ChangeRoom : MonoBehaviour
             }
         }
 
+    }
+    private void CheckRoom(Vector2 newLocation , string direction, Vector3 roomOffset)
+    {
+            Vector2 location = Player._currentRoom.location;
+            //where are we going  ?
+
+            location = location + newLocation;
+            if (Level.roooms.Exists(x => x.location == location))
+            {
+                Room r = Level.roooms.First(x => x.location == location);
+                roomParent.Find(Player._currentRoom.roomNumber.ToString()).gameObject.SetActive(false);
+                Transform nextRoom = roomParent.Find(r.roomNumber.ToString());
+                nextRoom.gameObject.SetActive(true);
+                Player._characterController.enabled = false;
+                Player.transform.position = nextRoom.Find("Doors").Find(direction).position + roomOffset;
+                Player._characterController.enabled = true;
+                ChangeRoomImage(Player._currentRoom, r);
+                Player._currentRoom = r;
+                EnableDoor(r);
+                
+                RevealRoom(r);
+                ReDrawRoomRealved();
+                
+
+            }
+    }
+    public static void RevealRoom(Room r)
+    {
+        foreach(Room room in Level.roooms)
+        {
+            //left
+            if(room.location == r.location + new Vector2(-1,0))
+            {
+                room.reveledRoom = true;
+            }
+
+            //right
+             if(room.location == r.location + new Vector2(1,0))
+            {
+                room.reveledRoom = true;
+            }
+
+            //Up
+             if(room.location == r.location + new Vector2(0,1))
+            {
+                room.reveledRoom = true;
+            }
+
+            //Down
+             if(room.location == r.location + new Vector2(0,-1))
+            {
+                room.reveledRoom = true;
+            }
+
+        }
+    }
+    public static void ReDrawRoomRealved()
+    {
+        foreach( Room room in Level.roooms)
+        {
+            if(!room.reveledRoom && !room.exploredRoom)
+            {
+                room.roomImage.color  = new Color(1,1,1,0);
+            }
+            if(room.reveledRoom && !room.exploredRoom && room.roomNumber > 5)
+            {
+                room.roomImage.sprite = Level._unexploredIcon;
+            }
+            if(room.exploredRoom && room.roomNumber >5)
+            {
+                room.roomImage.sprite = Level._defaultRoomIcon;
+            
+            }
+            if(room.exploredRoom || room.reveledRoom)
+            {
+                 room.roomImage.color  = new Color(1,1,1,1);
+
+            }
+            Player._currentRoom.roomImage.sprite = Level._currentRoomIcon;
+        }
     }
 }

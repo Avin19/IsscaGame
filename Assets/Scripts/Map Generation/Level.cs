@@ -18,6 +18,7 @@ public static class Level
     public static Sprite _defaultRoomIcon;
     public static Sprite _currentRoomIcon;
     public static Sprite _unexploredIcon;
+    public static Sprite  _secretRoomIcon;
 
     public static int _roomlimit =6;
     public static List<Room> roooms = new List<Room>();
@@ -35,6 +36,11 @@ public class Room
 
     public Sprite roomSprite;
     public Image roomImage;
+    public bool reveledRoom;
+
+    public bool exploredRoom;
+
+    
 
 
 }
