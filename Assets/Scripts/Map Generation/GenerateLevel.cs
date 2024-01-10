@@ -53,7 +53,7 @@ public class GenerateLevel : MonoBehaviour
         GenerateBossRoom();
         bool teasure =GenerateSpecialRoom(Level._treasureRoomIcon, 3);
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
-        bool secret = GenerateSpecialRoom(Level._secretRoomIcon ,4);
+        bool secret = GenerateSerectRoom();
 
         if(!teasure || !shop || !secret)
         {
@@ -65,6 +65,23 @@ public class GenerateLevel : MonoBehaviour
             ChangeRoom.ReDrawRoomRealved();
         }
 
+    }
+
+    private bool GenerateSerectRoom()
+    {
+
+        foreach (Room r in Level.roooms)
+        {
+            if(Mathf.Abs(r.location.x)>3|| Mathf.Abs(r.location.y)>3 )
+            {
+                continue;
+            }
+            if(r.location == Vector2.zero)
+            {   
+                continue;
+            }
+        }
+       return false;
     }
 
     private void RegenerateMap()

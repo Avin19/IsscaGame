@@ -20,6 +20,8 @@ public static class Level
     public static Sprite _unexploredIcon;
     public static Sprite  _secretRoomIcon;
 
+    public static GameObject secertRoomExplosion;
+
     public static int _roomlimit =6;
     public static List<Room> roooms = new List<Room>();
     public static float roomChangeTime =0.5f;

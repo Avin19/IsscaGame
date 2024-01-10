@@ -13,7 +13,7 @@ public class ChangeRoom : MonoBehaviour
 
     private void Start()
     {
-        perviousRoomImage = Level._defaultRoomIcon;
+        perviousRoomImage = Level._currentRoomIcon;
         EnableDoor(Player._currentRoom);
     }
 
@@ -21,7 +21,7 @@ public class ChangeRoom : MonoBehaviour
     {
         currentRoom.roomImage.sprite = perviousRoomImage;
         perviousRoomImage = nextRoom.roomImage.sprite;
-        nextRoom.roomImage.sprite = Level._currentRoomIcon;
+        nextRoom.roomImage.sprite = Level._defaultRoomIcon;
         
     }
     bool roomchangeTime = false;

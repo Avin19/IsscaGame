@@ -9,6 +9,7 @@ public class InitalizePlayer : MonoBehaviour
     [SerializeField] private GameObject _playerAttackExplosionPf;
     [SerializeField]private Transform _transfrom;
     [SerializeField] private CharacterController characterController;
+    [SerializeField] private GameObject serectRoomExplosion ; 
 
     private void Awake() {
         _animator = GetComponent<Animator>();
@@ -21,6 +22,7 @@ public class InitalizePlayer : MonoBehaviour
         Player._pfAttackExplosion = _playerAttackExplosionPf;
         Player.transform = _transfrom;
         Player._characterController = characterController;
+        Level.secertRoomExplosion = serectRoomExplosion;
     }
 
    
