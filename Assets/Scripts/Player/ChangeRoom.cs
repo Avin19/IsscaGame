@@ -13,7 +13,7 @@ public class ChangeRoom : MonoBehaviour
 
     private void Start()
     {
-        perviousRoomImage = Level._currentRoomIcon;
+        perviousRoomImage = Level._defaultRoomIcon;
         EnableDoor(Player._currentRoom);
     }
 

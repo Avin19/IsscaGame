@@ -55,7 +55,7 @@ public class GenerateLevel : MonoBehaviour
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
         bool secret = GenerateSerectRoom();
 
-        if(!teasure || !shop || !secret)
+        if(!teasure || !shop || secret)
         {
             RegenerateMap();
         }
@@ -69,8 +69,9 @@ public class GenerateLevel : MonoBehaviour
 
     private bool GenerateSerectRoom()
     {
-
-        foreach (Room r in Level.roooms)
+        List<Room> shuffleList = new List<Room>();
+        ShuffleList(shuffleList);
+        foreach (Room r in shuffleList)
         {
             if(Mathf.Abs(r.location.x)>3|| Mathf.Abs(r.location.y)>3 )
             {
@@ -80,6 +81,22 @@ public class GenerateLevel : MonoBehaviour
             {   
                 continue;
             }
+            //Left
+            if(!Level.roooms.Exists(x=> x.location == r.location+new Vector2(-1,0)))
+            {
+                Room rs = new Room();
+                rs.location = r.location + new Vector2(-1,0);
+                rs.roomSprite = Level._secretRoomIcon;
+                rs.exploredRoom =false;
+                rs.reveledRoom =false;
+                rs.roomNumber =4;
+            }
+
+            //Right
+
+            //up
+
+            //Down 
         }
        return false;
     }
@@ -106,6 +123,7 @@ public class GenerateLevel : MonoBehaviour
     {
 
         List<Room> shuffedList = new List<Room>(Level.roooms);
+        ShuffleList(shuffedList);
         Room specialRoom = new Room();
         specialRoom.roomSprite = mapIcon;
         specialRoom.roomNumber = roomNumber;
