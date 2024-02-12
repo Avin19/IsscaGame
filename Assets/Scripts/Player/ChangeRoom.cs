@@ -22,7 +22,7 @@ public class ChangeRoom : MonoBehaviour
         currentRoom.roomImage.sprite = perviousRoomImage;
         perviousRoomImage = nextRoom.roomImage.sprite;
         nextRoom.roomImage.sprite = Level._defaultRoomIcon;
-        
+
     }
     bool roomchangeTime = false;
 
@@ -87,7 +87,13 @@ public class ChangeRoom : MonoBehaviour
         Vector2 newLocation = r.location + location;
         if (Level.roooms.Exists(x => x.location == newLocation))
         {
-            dRoom.Find(name).gameObject.SetActive(true);
+            if (Level.roooms.First(x => x.location == newLocation).roomNumber == 4)
+            {
+                GameObject GO = dRoom.Find(name).gameObject;
+                Instantiate(Level.xMark, GO.transform.position, GO.transform.rotation);
+            }
+            else
+            { dRoom.Find(name).gameObject.SetActive(true); }
         }
 
     }
@@ -127,7 +133,7 @@ public class ChangeRoom : MonoBehaviour
             }
 
             //right
-            if (room.location == r.location + new Vector2(1, 0)  && room.roomNumber != 4)
+            if (room.location == r.location + new Vector2(1, 0) && room.roomNumber != 4)
             {
                 room.reveledRoom = true;
             }
