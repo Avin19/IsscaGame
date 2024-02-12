@@ -121,25 +121,25 @@ public class ChangeRoom : MonoBehaviour
         foreach (Room room in Level.roooms)
         {
             //left
-            if (room.location == r.location + new Vector2(-1, 0))
+            if (room.location == r.location + new Vector2(-1, 0) && room.roomNumber != 4)
             {
                 room.reveledRoom = true;
             }
 
             //right
-            if (room.location == r.location + new Vector2(1, 0))
+            if (room.location == r.location + new Vector2(1, 0)  && room.roomNumber != 4)
             {
                 room.reveledRoom = true;
             }
 
             //Up
-            if (room.location == r.location + new Vector2(0, 1))
+            if (room.location == r.location + new Vector2(0, 1) && room.roomNumber != 4)
             {
                 room.reveledRoom = true;
             }
 
             //Down
-            if (room.location == r.location + new Vector2(0, -1))
+            if (room.location == r.location + new Vector2(0, -1) && room.roomNumber != 4)
             {
                 room.reveledRoom = true;
             }
