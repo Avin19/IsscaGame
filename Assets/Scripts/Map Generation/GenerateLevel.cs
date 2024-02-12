@@ -14,7 +14,7 @@ public class GenerateLevel : MonoBehaviour
 
     [SerializeField] private Sprite _unexploredRoom;
     [SerializeField] private Sprite _secretRoom;
-
+    private int maxtries = 0;
     private void Awake()
     {
         Level._defaultRoomIcon = _emptyRoom;
@@ -23,40 +23,41 @@ public class GenerateLevel : MonoBehaviour
         Level._currentRoomIcon = _currentRoom;
         Level._shopRoomIcon = _shopRoom;
         Level._unexploredIcon = _unexploredRoom;
-        Level._secretRoomIcon =_secretRoom;
+        Level._secretRoomIcon = _secretRoom;
     }
     void Start()
     {
-
+        maxtries++;
         //Drawing the start the first room
         Room startRoom = new Room();
         startRoom.location = new Vector2(0, 0);
-        startRoom.exploredRoom =true;
-        startRoom.reveledRoom =true;
+        startRoom.exploredRoom = true;
+        startRoom.reveledRoom = true;
         startRoom.roomSprite = Level._currentRoomIcon;
         startRoom.roomNumber = 0;
         Player._currentRoom = startRoom;
 
         DrawRoomOnMap(startRoom);
         //left
-       
-        CreateRoom(startRoom, "Right",new Vector2(-1, 0));
+
+        CreateRoom(startRoom, "Right", new Vector2(-1, 0));
         //Right
-        
-         CreateRoom(startRoom, "Left",new Vector2(1, 0));
+
+        CreateRoom(startRoom, "Left", new Vector2(1, 0));
         //Up
-       
-         CreateRoom(startRoom, "Down",new Vector2(0, 1));
+
+        CreateRoom(startRoom, "Down", new Vector2(0, 1));
         //Down
-       
-         CreateRoom(startRoom, "Up",new Vector2(0, -1));
+
+        CreateRoom(startRoom, "Up", new Vector2(0, -1));
         GenerateBossRoom();
-        bool teasure =GenerateSpecialRoom(Level._treasureRoomIcon, 3);
+        bool teasure = GenerateSpecialRoom(Level._treasureRoomIcon, 3);
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
         bool secret = GenerateSerectRoom();
 
-        if(!teasure || !shop || secret)
+        if (!teasure || !shop || !secret)
         {
+            if (maxtries > 15) return;
             RegenerateMap();
         }
         else
@@ -73,43 +74,85 @@ public class GenerateLevel : MonoBehaviour
         ShuffleList(shuffleList);
         foreach (Room r in shuffleList)
         {
-            if(Mathf.Abs(r.location.x)>3|| Mathf.Abs(r.location.y)>3 )
+            //x and y < 3 and > -3 starting room is at 0,0
+            if (Mathf.Abs(r.location.x) > 3 || Mathf.Abs(r.location.y) > 3)
             {
                 continue;
             }
-            if(r.location == Vector2.zero)
-            {   
+
+            if (r.location == Vector2.zero)
+            {
                 continue;
             }
+            Vector2 newLocation = r.location + new Vector2(-1, 0);
             //Left
-            if(!Level.roooms.Exists(x=> x.location == r.location+new Vector2(-1,0)))
+            //Check if a room already eists at thye new location
+            if (!Level.roooms.Exists(x => x.location == newLocation))
+            {
+                if (Mathf.Abs(newLocation.x) > 1 || Mathf.Abs(newLocation.y) > 1) // Prvenet it from drawing net to net to start room
+                {
+                    Room rs = new Room();
+                    rs.location = newLocation;
+                    rs.roomSprite = Level._secretRoomIcon;
+                    rs.exploredRoom = false;
+                    rs.reveledRoom = false;
+                    rs.roomNumber = 4;
+                    DrawRoomOnMap(rs);
+                    return true;
+                }
+            }
+            newLocation = r.location + new Vector2(1, 0);
+            //Right
+            if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(1, 0)))
             {
                 Room rs = new Room();
-                rs.location = r.location + new Vector2(-1,0);
+                rs.location = r.location + new Vector2(1, 0);
                 rs.roomSprite = Level._secretRoomIcon;
-                rs.exploredRoom =false;
-                rs.reveledRoom =false;
-                rs.roomNumber =4;
+                rs.exploredRoom = false;
+                rs.reveledRoom = false;
+                rs.roomNumber = 4;
+                DrawRoomOnMap(rs);
+                return true;
             }
 
-            //Right
-
             //up
+            if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, 1)))
+            {
+                Room rs = new Room();
+                rs.location = r.location + new Vector2(0, 1);
+                rs.roomSprite = Level._secretRoomIcon;
+                rs.exploredRoom = false;
+                rs.reveledRoom = false;
+                rs.roomNumber = 4;
+                DrawRoomOnMap(rs);
+                return true;
+            }
 
             //Down 
+            if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, -1)))
+            {
+                Room rs = new Room();
+                rs.location = r.location + new Vector2(0, -1);
+                rs.roomSprite = Level._secretRoomIcon;
+                rs.exploredRoom = false;
+                rs.reveledRoom = false;
+                rs.roomNumber = 4;
+                DrawRoomOnMap(rs);
+                return true;
+            }
         }
-       return false;
+        return false;
     }
 
     private void RegenerateMap()
     {
-          for (int i = transform.childCount - 1; i >= 0; i--)
-            {
-                Transform child = transform.GetChild(i);
-                Destroy(child.gameObject);
-            }
-            Level.roooms.Clear();
-            Start();
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            Transform child = transform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+        Level.roooms.Clear();
+        Start();
 
 
     }
@@ -278,10 +321,10 @@ public class GenerateLevel : MonoBehaviour
     private void DrawRoomOnMap(Room r)
     {
         string roomName = "Map Tile";
-        if(r.roomNumber ==1) roomName = "Boss Room";
-        if(r.roomNumber== 2 ) roomName ="Shop Room";
-        if(r.roomNumber == 3) roomName = "Teasure Room";
-        if(r.roomNumber == 4) roomName = "Secert Room";
+        if (r.roomNumber == 1) roomName = "Boss Room";
+        if (r.roomNumber == 2) roomName = "Shop Room";
+        if (r.roomNumber == 3) roomName = "Teasure Room";
+        if (r.roomNumber == 4) roomName = "Secert Room";
         GameObject mapTile = new GameObject(roomName);
         Image roomSprite = mapTile.AddComponent<Image>();
         roomSprite.sprite = r.roomSprite;
@@ -345,7 +388,7 @@ public class GenerateLevel : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-           RegenerateMap();
+            RegenerateMap();
         }
     }
 
@@ -364,7 +407,7 @@ public class GenerateLevel : MonoBehaviour
 
 
         }
-       
+
         Room bossRoom = new Room();
         bossRoom.roomSprite = Level._bossRoomIcon;
         bossRoom.roomNumber = 1;
@@ -412,12 +455,12 @@ public class GenerateLevel : MonoBehaviour
 
     private int RandomRoomNumber()
     {
-        return Random.Range(6,GameObject.Find("Rooms").transform.childCount);
+        return Random.Range(6, GameObject.Find("Rooms").transform.childCount);
     }
 
-    private void CreateRoom(Room startRoom , string direction , Vector2 where)
+    private void CreateRoom(Room startRoom, string direction, Vector2 where)
     {
-         if (Random.value > Level._roomGenerationChance)
+        if (Random.value > Level._roomGenerationChance)
         {
             Room room = new Room();
             room.location = where + startRoom.location;
