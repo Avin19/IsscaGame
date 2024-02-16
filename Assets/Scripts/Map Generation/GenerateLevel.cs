@@ -28,6 +28,7 @@ public class GenerateLevel : MonoBehaviour
     void Start()
     {
         maxtries++;
+        Debug.Log(maxtries);
         //Drawing the start the first room
         Room startRoom = new Room();
         startRoom.location = new Vector2(0, 0);
@@ -50,10 +51,11 @@ public class GenerateLevel : MonoBehaviour
         //Down
 
         CreateRoom(startRoom, "Up", new Vector2(0, -1));
-        GenerateBossRoom();
+
         bool teasure = GenerateSpecialRoom(Level._treasureRoomIcon, 3);
         bool shop = GenerateSpecialRoom(Level._shopRoomIcon, 2);
         bool secret = GenerateSerectRoom();
+        GenerateBossRoom();
 
         if (!teasure || !shop || !secret)
         {
@@ -70,20 +72,26 @@ public class GenerateLevel : MonoBehaviour
 
     private bool GenerateSerectRoom()
     {
-        List<Room> shuffleList = new List<Room>();
+
+        List<Room> shuffleList = new List<Room>(Level.roooms);
         ShuffleList(shuffleList);
+
         foreach (Room r in shuffleList)
         {
+            Room rs = new Room();
+            rs.roomSprite = Level._secretRoomIcon;
+            rs.exploredRoom = false;
+            rs.reveledRoom = false;
+            rs.roomNumber = 4;
+            Debug.Log("Here 0");
             //x and y < 3 and > -3 starting room is at 0,0
-            if (Mathf.Abs(r.location.x) > 3 || Mathf.Abs(r.location.y) > 3)
+            if (Mathf.Abs(r.location.x) > 3 || Mathf.Abs(r.location.y) > 3 || r.location == Vector2.zero)
             {
+                Debug.Log("Here 1");
                 continue;
-            }
 
-            if (r.location == Vector2.zero)
-            {
-                continue;
             }
+            Debug.Log("Here 2");
             Vector2 newLocation = r.location + new Vector2(-1, 0);
             //Left
             //Check if a room already eists at thye new location
@@ -91,12 +99,9 @@ public class GenerateLevel : MonoBehaviour
             {
                 if (Mathf.Abs(newLocation.x) > 1 || Mathf.Abs(newLocation.y) > 1) // Prvenet it from drawing net to net to start room
                 {
-                    Room rs = new Room();
+                   
                     rs.location = newLocation;
-                    rs.roomSprite = Level._secretRoomIcon;
-                    rs.exploredRoom = false;
-                    rs.reveledRoom = false;
-                    rs.roomNumber = 4;
+
                     DrawRoomOnMap(rs);
                     return true;
                 }
@@ -105,12 +110,9 @@ public class GenerateLevel : MonoBehaviour
             //Right
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(1, 0)))
             {
-                Room rs = new Room();
+               
                 rs.location = r.location + new Vector2(1, 0);
-                rs.roomSprite = Level._secretRoomIcon;
-                rs.exploredRoom = false;
-                rs.reveledRoom = false;
-                rs.roomNumber = 4;
+               
                 DrawRoomOnMap(rs);
                 return true;
             }
@@ -118,12 +120,9 @@ public class GenerateLevel : MonoBehaviour
             //up
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, 1)))
             {
-                Room rs = new Room();
+              
                 rs.location = r.location + new Vector2(0, 1);
-                rs.roomSprite = Level._secretRoomIcon;
-                rs.exploredRoom = false;
-                rs.reveledRoom = false;
-                rs.roomNumber = 4;
+               
                 DrawRoomOnMap(rs);
                 return true;
             }
@@ -131,17 +130,16 @@ public class GenerateLevel : MonoBehaviour
             //Down 
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, -1)))
             {
-                Room rs = new Room();
+                
                 rs.location = r.location + new Vector2(0, -1);
-                rs.roomSprite = Level._secretRoomIcon;
-                rs.exploredRoom = false;
-                rs.reveledRoom = false;
-                rs.roomNumber = 4;
+               
                 DrawRoomOnMap(rs);
                 return true;
             }
-        }
+
+         }
         return false;
+        
     }
 
     private void RegenerateMap()
