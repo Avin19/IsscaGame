@@ -4874,7 +4874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14562,7 +14562,7 @@ MonoBehaviour:
   characterController: {fileID: 7734336303686284174}
   serectRoomExplosion: {fileID: 7871910809761952073, guid: 3d9be28f8337e0f4c8d6729513cc223a,
     type: 3}
-  xMark: {fileID: 0}
+  xMark: {fileID: 1421705752183914091, guid: 4ce93966dd7af134089b9e8f08d4b78a, type: 3}
 --- !u!114 &7734336303686284176
 MonoBehaviour:
   m_ObjectHideFlags: 0

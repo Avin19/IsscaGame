@@ -82,6 +82,10 @@ public class ChangeRoom : MonoBehaviour
 
 
     }
+    bool CheckIfRoomAlreadyHasX(Transform dRoom)
+    {// espideo 12 time 26:48 
+        return false;
+    }
     private void SetDoorToTheRoom(Transform dRoom, Room r, Vector2 location, string name)
     {
         Vector2 newLocation = r.location + location;
@@ -89,8 +93,11 @@ public class ChangeRoom : MonoBehaviour
         {
             if (Level.roooms.First(x => x.location == newLocation).roomNumber == 4)
             {
-                GameObject GO = dRoom.Find(name).gameObject;
-                Instantiate(Level.xMark, GO.transform.position, GO.transform.rotation);
+                if (!CheckIfRoomAlreadyHasX(dRoom))
+                {
+                    GameObject GO = dRoom.Find(name).gameObject;
+                    Instantiate(Level.xMark, GO.transform.position, GO.transform.rotation * Quaternion.Euler(0f, 90f, 0f), dRoom);
+                }
             }
             else
             { dRoom.Find(name).gameObject.SetActive(true); }
