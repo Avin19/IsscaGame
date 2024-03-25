@@ -22,7 +22,7 @@ public static class Level
 
     public static GameObject secertRoomExplosion;
     public static GameObject secertRoomDoor;
-
+    public static bool secertRoomExplosed = false;
     public static GameObject xMark;
 
     public static int _roomlimit = 6;

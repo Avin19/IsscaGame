@@ -84,14 +84,14 @@ public class ChangeRoom : MonoBehaviour
     }
     bool CheckIfRoomAlreadyHasX(Transform dRoom)
     {
-        for(int i =0 ; i < dRoom.childCount; i++)
+        for (int i = 0; i < dRoom.childCount; i++)
         {
-            if(dRoom.GetChild(i).name.Contains("DrawX"))
+            if (dRoom.GetChild(i).name.Contains("DrawX"))
             {
                 return true;
             }
         }
-         
+
         return false;
     }
     private void SetDoorToTheRoom(Transform dRoom, Room r, Vector2 location, string name)
@@ -99,13 +99,23 @@ public class ChangeRoom : MonoBehaviour
         Vector2 newLocation = r.location + location;
         if (Level.roooms.Exists(x => x.location == newLocation))
         {
+            GameObject GO = dRoom.Find(name).gameObject;
+
             if (Level.roooms.First(x => x.location == newLocation).roomNumber == 4)
             {
-                if (!CheckIfRoomAlreadyHasX(dRoom))
+                if (Level.secertRoomExplosed)
                 {
-                    GameObject GO = dRoom.Find(name).gameObject;
-                    Instantiate(Level.xMark, GO.transform.position, GO.transform.rotation * Quaternion.Euler(0f, 90f, 0f), dRoom);
+                    GameObject scrcetDoor = Instantiate(Level.secertRoomDoor, GO.transform.position, GO.transform.rotation * Quaternion.Euler(0f, 90f, 0f), dRoom);
+                    scrcetDoor.name = name;
                 }
+                else
+                {
+                    if (!CheckIfRoomAlreadyHasX(dRoom))
+                    {
+                        Instantiate(Level.xMark, GO.transform.position, GO.transform.rotation * Quaternion.Euler(0f, 90f, 0f), dRoom);
+                    }
+                }
+
             }
             else
             { dRoom.Find(name).gameObject.SetActive(true); }

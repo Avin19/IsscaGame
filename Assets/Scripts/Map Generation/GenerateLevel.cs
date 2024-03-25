@@ -75,23 +75,19 @@ public class GenerateLevel : MonoBehaviour
 
         List<Room> shuffleList = new List<Room>(Level.roooms);
         ShuffleList(shuffleList);
-
+        Room rs = new Room();
+        rs.roomSprite = Level._secretRoomIcon;
+        rs.exploredRoom = false;
+        rs.reveledRoom = false;
+        rs.roomNumber = 4;
         foreach (Room r in shuffleList)
         {
-            Room rs = new Room();
-            rs.roomSprite = Level._secretRoomIcon;
-            rs.exploredRoom = false;
-            rs.reveledRoom = false;
-            rs.roomNumber = 4;
-            Debug.Log("Here 0");
             //x and y < 3 and > -3 starting room is at 0,0
             if (Mathf.Abs(r.location.x) > 3 || Mathf.Abs(r.location.y) > 3 || r.location == Vector2.zero)
             {
-                Debug.Log("Here 1");
                 continue;
 
             }
-            Debug.Log("Here 2");
             Vector2 newLocation = r.location + new Vector2(-1, 0);
             //Left
             //Check if a room already eists at thye new location
@@ -99,7 +95,7 @@ public class GenerateLevel : MonoBehaviour
             {
                 if (Mathf.Abs(newLocation.x) > 1 || Mathf.Abs(newLocation.y) > 1) // Prvenet it from drawing net to net to start room
                 {
-                   
+
                     rs.location = newLocation;
 
                     DrawRoomOnMap(rs);
@@ -110,9 +106,9 @@ public class GenerateLevel : MonoBehaviour
             //Right
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(1, 0)))
             {
-               
+
                 rs.location = r.location + new Vector2(1, 0);
-               
+
                 DrawRoomOnMap(rs);
                 return true;
             }
@@ -120,9 +116,9 @@ public class GenerateLevel : MonoBehaviour
             //up
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, 1)))
             {
-              
+
                 rs.location = r.location + new Vector2(0, 1);
-               
+
                 DrawRoomOnMap(rs);
                 return true;
             }
@@ -130,16 +126,16 @@ public class GenerateLevel : MonoBehaviour
             //Down 
             if (!Level.roooms.Exists(x => x.location == r.location + new Vector2(0, -1)))
             {
-                
+
                 rs.location = r.location + new Vector2(0, -1);
-               
+
                 DrawRoomOnMap(rs);
                 return true;
             }
 
-         }
+        }
         return false;
-        
+
     }
 
     private void RegenerateMap()
