@@ -83,7 +83,15 @@ public class ChangeRoom : MonoBehaviour
 
     }
     bool CheckIfRoomAlreadyHasX(Transform dRoom)
-    {// espideo 12 time 26:48 
+    {
+        for(int i =0 ; i < dRoom.childCount; i++)
+        {
+            if(dRoom.GetChild(i).name.Contains("DrawX"))
+            {
+                return true;
+            }
+        }
+         
         return false;
     }
     private void SetDoorToTheRoom(Transform dRoom, Room r, Vector2 location, string name)
