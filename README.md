@@ -1,4 +1,4 @@
-# ISSCa Binding Game Remake
+# ISSCA Binding Game Remake
 
 Welcome to the ISSCa Binding Game Remake repository! In this project, we're revamping the classic ISSCa binding game into a modern 3D experience. Strap in and get ready for an immersive journey through space as you navigate and dock with the International Space Station (ISS).
 
@@ -56,7 +56,7 @@ If you're curious about the original ISSCa Binding Game, you can still play it [
 
 ## Credits
 
-This game remake is created by Avinash Yadav. It is inspired by the original ISSCa Binding Game developed by [Original Developer Name].
+This game remake is created by Avinash Yadav.
 
 ## Feedback
 
