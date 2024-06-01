@@ -13,6 +13,7 @@ public class InitalizePlayer : MonoBehaviour
     [SerializeField] private GameObject xMark;
     [SerializeField] private GameObject bomb;
     [SerializeField] private GameObject playerStaff;
+    [SerializeField] private GameObject bombExplosion;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class InitalizePlayer : MonoBehaviour
         Player._characterController = characterController;
         Player._pfBomb = bomb;
         Player._playerStaff = playerStaff;
+        Player._pfBombExplosion = bombExplosion;
         Level.secertRoomExplosion = serectRoomExplosion;
         Level.xMark = xMark;
         Level.secertRoomDoor = serectRoomDoor;

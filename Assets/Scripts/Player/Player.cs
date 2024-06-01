@@ -8,6 +8,7 @@ public static class Player
     public static GameObject _pfAttack;
     public static GameObject _pfAttackExplosion;
     public static GameObject _pfBomb;
+    public static GameObject _pfBombExplosion;
     public static GameObject _playerStaff;
     public static Room _currentRoom;
 
