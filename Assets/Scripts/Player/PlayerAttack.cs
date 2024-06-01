@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -12,9 +10,9 @@ public class PlayerAttack : MonoBehaviour
     }
     public void Attack()
     {
-        GameObject pfAttack = Instantiate(Player._pfAttack,transform.position + transform.forward*5f,Quaternion.identity);
-        pfAttack.GetComponent<Rigidbody>().velocity = transform.forward*30f;
-        GameObject.Destroy(pfAttack,10f);
+        GameObject pfAttack = Instantiate(Player._pfAttack, transform.position + transform.forward * 5f, Quaternion.identity);
+        pfAttack.GetComponent<Rigidbody>().velocity = transform.forward * 30f;
+        GameObject.Destroy(pfAttack, 10f);
     }
     void Update()
     {
