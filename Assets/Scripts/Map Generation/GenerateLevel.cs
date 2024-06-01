@@ -28,7 +28,7 @@ public class GenerateLevel : MonoBehaviour
     void Start()
     {
         maxtries++;
-        Debug.Log(maxtries);
+
         //Drawing the start the first room
         Room startRoom = new Room();
         startRoom.location = new Vector2(0, 0);

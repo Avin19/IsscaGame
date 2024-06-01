@@ -11,6 +11,8 @@ public class InitalizePlayer : MonoBehaviour
     [SerializeField] private GameObject serectRoomDoor;
 
     [SerializeField] private GameObject xMark;
+    [SerializeField] private GameObject bomb;
+    [SerializeField] private GameObject playerStaff;
 
     private void Awake()
     {
@@ -24,6 +26,8 @@ public class InitalizePlayer : MonoBehaviour
         Player._pfAttackExplosion = _playerAttackExplosionPf;
         Player.transform = _transfrom;
         Player._characterController = characterController;
+        Player._pfBomb = bomb;
+        Player._playerStaff = playerStaff;
         Level.secertRoomExplosion = serectRoomExplosion;
         Level.xMark = xMark;
         Level.secertRoomDoor = serectRoomDoor;

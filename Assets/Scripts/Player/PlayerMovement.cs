@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
-        if ((h != 0 || v != 0) && Player._status == "Idle")
+        if ((h != 0 || v != 0) && (Player._status == "Idle" || Player._status == "HoldingBomb"))
         {
             Player._animator.SetFloat("Speed", 1);
             Player._animator.Play("Walk");
