@@ -9,16 +9,16 @@ public class InitalizePlayer : MonoBehaviour
     [SerializeField] private CharacterController characterController;
     [SerializeField] private GameObject serectRoomExplosion;
     [SerializeField] private GameObject serectRoomDoor;
-
     [SerializeField] private GameObject xMark;
     [SerializeField] private GameObject bomb;
     [SerializeField] private GameObject playerStaff;
     [SerializeField] private GameObject bombExplosion;
+    [SerializeField] private GameObject healthPanel;
+    [SerializeField] private GameObject diePanel;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-
     }
     void Start()
     {
@@ -29,7 +29,9 @@ public class InitalizePlayer : MonoBehaviour
         Player._characterController = characterController;
         Player._pfBomb = bomb;
         Player._playerStaff = playerStaff;
+        Player._diePanel = diePanel;
         Player._pfBombExplosion = bombExplosion;
+        Player._healthPanel = healthPanel;
         Level.secertRoomExplosion = serectRoomExplosion;
         Level.xMark = xMark;
         Level.secertRoomDoor = serectRoomDoor;
