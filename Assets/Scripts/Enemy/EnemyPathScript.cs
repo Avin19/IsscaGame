@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Callbacks;
+
 using UnityEngine;
 
 
@@ -13,10 +13,11 @@ public class EnemyPathScript : MonoBehaviour
     private List<Vector3> pathPoints = new List<Vector3>();
 
     private bool pathDrawn = false;
-    int numberpoint = 0;
+
     private Rigidbody rb;
     private Vector3 moveTowardPlayer = Vector3.zero;
     [SerializeField] private float speed = 2f;
+    private int numberpoint = 0;
 
     private void Start()
     {
@@ -34,7 +35,7 @@ public class EnemyPathScript : MonoBehaviour
         {
             moveTowardPlayer = pathPoints[0] - transform.position;
             rb.velocity = moveTowardPlayer.normalized * speed;
-            if (Vector3.Distance(transform.position, pathPoints[0]) < 0.2f)
+            if (Vector3.Distance(transform.position, pathPoints[0]) < 0.02f)
             {
                 pathPoints.RemoveAt(0);
             }
@@ -47,9 +48,10 @@ public class EnemyPathScript : MonoBehaviour
     }
     private void DrawPoint(Vector3 currentPoint)
     {
-
+        numberpoint++;
+        if (numberpoint > 50) return;
         Vector3 dir = Player.transform.position - currentPoint;
-        if (Vector3.Distance(Player.transform.position, currentPoint) < 5) return;
+        if (Vector3.Distance(Player.transform.position, currentPoint) < 1f) return;
         bool checkDirection = true;
         int failsafe = -1;
         int counter = 0;
@@ -88,7 +90,8 @@ public class EnemyPathScript : MonoBehaviour
     }
     private void DrawPath()
     {
-        if (pathPoints.Count > 0) { pathPoints.Clear(); }
+        if (pathPoints.Count > 0) { pathPoints.Clear(); numberpoint = 0; }
+        // if (Vector3.Distance(Player.transform.position, transform.position) < 1f) return;
         DrawPoint(transform.position);
     }
 }
