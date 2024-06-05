@@ -59,7 +59,7 @@ public class HealthManager : MonoBehaviour
     }
 
 
-    private void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         if (!Player.invincible)
         {
