@@ -18,4 +18,5 @@ public static class Player
     public static Room _currentRoom;
     public static CharacterController _characterController;
     public static GameObject _diePanel;
+    public static Transform _transform;
 }

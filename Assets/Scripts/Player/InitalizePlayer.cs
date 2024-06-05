@@ -29,6 +29,7 @@ public class InitalizePlayer : MonoBehaviour
         Player._characterController = characterController;
         Player._pfBomb = bomb;
         Player._playerStaff = playerStaff;
+        Player._transform = this.transform;
         Player._diePanel = diePanel;
         Player._pfBombExplosion = bombExplosion;
         Player._healthPanel = healthPanel;
